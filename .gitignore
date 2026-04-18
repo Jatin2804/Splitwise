@@ -73,3 +73,14 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Environment variables
+.env
+.env.*
+
+# React Native cache
+.expo/
+dist/
+
+# Misc
+*.log

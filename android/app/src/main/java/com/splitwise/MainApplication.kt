@@ -1,4 +1,4 @@
-package com.splitwise
+package com.Splitwise
 
 import android.app.Application
 import com.facebook.react.PackageList
