@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import GroupsScreen from '../screens/GroupsScreen';
 import FriendsScreen from '../screens/FriendsScreen';
 import ActivityScreen from '../screens/ActivityScreen';
-import AccountDrawerNavigator from './AccountDrawerNavigator';
+import AccountScreen from '../screens/AccountScreen';
 import { SCREEN_NAMES } from '../navigation';
 
 const Tab = createBottomTabNavigator();
@@ -15,16 +15,9 @@ const TabNavigator = () => {
       <Tab.Screen name={SCREEN_NAMES.FRIENDS} component={FriendsScreen} />
       <Tab.Screen name={SCREEN_NAMES.ACTIVITY} component={ActivityScreen} />
       <Tab.Screen
-        name={SCREEN_NAMES.ACCOUNT_TAB}
-        component={AccountDrawerNavigator}
+        name={SCREEN_NAMES.ACCOUNT}
+        component={AccountScreen}
         options={{ title: 'Account' }}
-        listeners={({ navigation }) => ({
-          tabPress: (e) => {
-            e.preventDefault();
-            navigation.navigate(SCREEN_NAMES.ACCOUNT_TAB); 
-            navigation.openDrawer(); 
-          },
-        })}
       />
     </Tab.Navigator>
   );

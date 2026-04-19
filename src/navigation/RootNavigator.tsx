@@ -2,6 +2,8 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import EnrollmentScreen from '../screens/EnrollmentScreen';
+import EmailDetailsScreen from '../screens/EmailDetailsScreen';
+import LogoutLoginScreen from '../screens/LogoutLoginScreen';
 import TabNavigator from './TabNavigator';
 import { SCREEN_NAMES } from '../navigation';
 
@@ -13,6 +15,8 @@ const RootNavigator = () => {
       <Stack.Screen name={SCREEN_NAMES.WELCOME} component={WelcomeScreen} options={{ headerShown: false }} />
       <Stack.Screen name={SCREEN_NAMES.ENROLLMENT} component={EnrollmentScreen} />
       <Stack.Screen name={SCREEN_NAMES.MAIN_APP} component={TabNavigator} options={{ headerShown: false }} />
+      <Stack.Screen name={SCREEN_NAMES.EMAIL_DETAILS} component={EmailDetailsScreen} options={{ title: 'Email Details' }} />
+      <Stack.Screen name={SCREEN_NAMES.LOGOUT_LOGIN} component={LogoutLoginScreen} options={{ title: 'Logout / Login' }} />
     </Stack.Navigator>
   );
 };
