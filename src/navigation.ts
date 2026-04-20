@@ -16,6 +16,7 @@ export const SCREEN_NAMES = {
   CREATE_GROUP: 'CreateGroup',
   GROUP_DETAILS: 'GroupDetails',
   ADD_MEMBERS: 'AddMembers',
+  GROUP_SETTINGS: 'GroupSettings',
 } as const;
 
 export type RootStackParamList = {
@@ -27,6 +28,7 @@ export type RootStackParamList = {
   [SCREEN_NAMES.CREATE_GROUP]: undefined;
   [SCREEN_NAMES.GROUP_DETAILS]: { groupId: string };
   [SCREEN_NAMES.ADD_MEMBERS]: { groupId: string };
+  [SCREEN_NAMES.GROUP_SETTINGS]: { groupId: string };
 };
 
 export type TabParamList = {

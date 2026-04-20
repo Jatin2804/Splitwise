@@ -63,7 +63,10 @@ const GroupDetailsScreen = ({ route, navigation }: Props) => {
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconButton}>
                   <Icon name="arrow-back" size={24} color="#fff" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.iconButton}>
+                <TouchableOpacity 
+                  style={styles.iconButton}
+                  onPress={() => navigation.navigate(SCREEN_NAMES.GROUP_SETTINGS, { groupId })}
+                >
                   <Icon name="settings" size={24} color="#fff" />
                 </TouchableOpacity>
               </View>

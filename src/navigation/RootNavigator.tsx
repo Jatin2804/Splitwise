@@ -8,6 +8,7 @@ import TabNavigator from './TabNavigator';
 import CreateGroupScreen from '../screens/CreateGroupScreen';
 import GroupDetailsScreen from '../screens/GroupDetailsScreen';
 import AddMembersScreen from '../screens/AddMembersScreen';
+import GroupSettingsScreen from '../screens/GroupSettingsScreen';
 import { SCREEN_NAMES } from '../navigation';
 
 const Stack = createNativeStackNavigator();
@@ -23,6 +24,7 @@ const RootNavigator = () => {
       <Stack.Screen name={SCREEN_NAMES.CREATE_GROUP} component={CreateGroupScreen} options={{ headerShown: false }} />
       <Stack.Screen name={SCREEN_NAMES.GROUP_DETAILS} component={GroupDetailsScreen} options={{ headerShown: false }} />
       <Stack.Screen name={SCREEN_NAMES.ADD_MEMBERS} component={AddMembersScreen} options={{ headerShown: false }} />
+      <Stack.Screen name={SCREEN_NAMES.GROUP_SETTINGS} component={GroupSettingsScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };
