@@ -11,6 +11,11 @@ export const SCREEN_NAMES = {
   FRIENDS: 'Friends',
   ACTIVITY: 'Activity',
   ACCOUNT: 'Account',
+
+  // Group Flow Screens
+  CREATE_GROUP: 'CreateGroup',
+  GROUP_DETAILS: 'GroupDetails',
+  ADD_MEMBERS: 'AddMembers',
 } as const;
 
 export type RootStackParamList = {
@@ -19,6 +24,9 @@ export type RootStackParamList = {
   [SCREEN_NAMES.MAIN_APP]: undefined;
   [SCREEN_NAMES.EMAIL_DETAILS]: undefined;
   [SCREEN_NAMES.LOGOUT_LOGIN]: undefined;
+  [SCREEN_NAMES.CREATE_GROUP]: undefined;
+  [SCREEN_NAMES.GROUP_DETAILS]: { groupId: string };
+  [SCREEN_NAMES.ADD_MEMBERS]: { groupId: string };
 };
 
 export type TabParamList = {

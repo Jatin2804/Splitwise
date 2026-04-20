@@ -1,10 +1,13 @@
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNaigation from './src/AppNaigation';
+import { AppProvider } from './src/context/AppContext';
 
 function App() {
   return (
     <SafeAreaProvider>
-      <AppNaigation />
+      <AppProvider>
+        <AppNaigation />
+      </AppProvider>
     </SafeAreaProvider>
   );
 }
