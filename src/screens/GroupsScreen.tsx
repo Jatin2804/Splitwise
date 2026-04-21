@@ -1,16 +1,32 @@
 import React, { useContext } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import { AppContext } from '../context/AppContext';
 import groupBg from '../assets/groupBg.jpg';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { SCREEN_NAMES } from '../navigation';
 
-
-const AddGroupIcon = ({ size = 20, iconSize = 20, plusSize = 14, color = 'black' }) => {
+const AddGroupIcon = ({
+  size = 20,
+  iconSize = 20,
+  plusSize = 14,
+  color = 'black',
+}) => {
   return (
     <View style={[styles.iconContainer, { width: size, height: size }]}>
       <Icon name="group" size={iconSize} color={color} />
-      <Icon name="add" size={plusSize} color={color} style={styles.plusIconOverlay} />
+      <Icon
+        name="add"
+        size={plusSize}
+        color={color}
+        style={styles.plusIconOverlay}
+      />
     </View>
   );
 };
@@ -32,9 +48,11 @@ const GroupsScreen = ({ navigation }: any) => {
 
   const renderItem = ({ item }: { item: any }) => {
     return (
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.card}
-        onPress={() => navigation.navigate(SCREEN_NAMES.GROUP_DETAILS, { groupId: item.id })}
+        onPress={() =>
+          navigation.navigate(SCREEN_NAMES.GROUP_DETAILS, { groupId: item.id })
+        }
         activeOpacity={0.7}
       >
         {/* Left Section - Image/Icon Section */}
@@ -42,7 +60,7 @@ const GroupsScreen = ({ navigation }: any) => {
           <Image source={groupBg} style={styles.groupImage} />
           <View style={styles.imageOverlay}>
             <Text style={styles.groupInitial}>
-             <Icon name="group" size={40} color="#ffffff" />
+              <Icon name="group" size={40} color="#ffffff" />
             </Text>
           </View>
         </View>
@@ -57,7 +75,9 @@ const GroupsScreen = ({ navigation }: any) => {
           </Text>
           <View style={styles.expenseContainer}>
             <Text style={styles.expenseLabel}>Total Expense: </Text>
-            <Text style={styles.expenseValue}>${item.totalspend?.toFixed(2) || '0.00'}</Text>
+            <Text style={styles.expenseValue}>
+              ${item.totalspend?.toFixed(2) || '0.00'}
+            </Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -66,12 +86,11 @@ const GroupsScreen = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
-    
       <View style={styles.header}>
         <View style={styles.headerContent}>
           <View style={styles.emptySpace} />
-          <TouchableOpacity 
-            style={styles.addButton} 
+          <TouchableOpacity
+            style={styles.addButton}
             onPress={handleAddGroup}
             activeOpacity={0.7}
           >
@@ -82,9 +101,11 @@ const GroupsScreen = ({ navigation }: any) => {
 
       <FlatList
         data={context.groups}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         renderItem={renderItem}
-        contentContainerStyle={context.groups.length === 0 ? { flex: 1 } : styles.listContent}
+        contentContainerStyle={
+          context.groups.length === 0 ? { flex: 1 } : styles.listContent
+        }
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.centerContainer}>
@@ -93,25 +114,42 @@ const GroupsScreen = ({ navigation }: any) => {
         }
         ListFooterComponent={
           context.groups.length > 0 ? (
-            <TouchableOpacity 
-              style={styles.transparentButton} 
+            <TouchableOpacity
+              style={styles.transparentButton}
               onPress={handleAddGroup}
               activeOpacity={0.7}
             >
-              <AddGroupIcon size={20} iconSize={16} plusSize={12} color="black" />
-              <Text style={styles.transparentButtonText}>Start a New Group</Text>
+              <AddGroupIcon
+                size={20}
+                iconSize={16}
+                plusSize={12}
+                color="black"
+              />
+              <Text style={styles.transparentButtonText}>
+                Start a New Group
+              </Text>
             </TouchableOpacity>
           ) : null
         }
       />
+
+      {/* Global Add Expense FAB */}
+      <TouchableOpacity
+        style={styles.expenseFab}
+        activeOpacity={0.85}
+        onPress={() => navigation.navigate(SCREEN_NAMES.ADD_EXPENSE, {})}
+      >
+        <Icon name="add" size={20} color="#fff" />
+        <Text style={styles.expenseFabText}>Add Expense</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: '#f8f9fa' 
+  container: {
+    flex: 1,
+    backgroundColor: '#f8f9fa',
   },
   header: {
     backgroundColor: '#ffffff',
@@ -130,7 +168,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: "100%"
+    width: '100%',
   },
   emptySpace: {
     width: 48,
@@ -142,7 +180,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   addButton: {
-    alignSelf: "flex-end",
+    alignSelf: 'flex-end',
     borderRadius: 30,
     width: 48,
     height: 48,
@@ -163,32 +201,32 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
   },
-  centerContainer: { 
-    flex: 1, 
-    justifyContent: 'center', 
-    alignItems: 'center' 
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingText: {
     fontSize: 16,
-    color: '#666'
+    color: '#666',
   },
-  listContent: { 
+  listContent: {
     padding: 16,
     paddingBottom: 32,
   },
   card: {
     flexDirection: 'row',
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderRadius: 20,
     marginBottom: 16,
     overflow: 'hidden',
-    height: 120, 
+    height: 100,
     borderWidth: 0,
   },
   imageSection: {
     width: 120,
-    height: 120, 
-    position: 'relative'
+    height: 120,
+    position: 'relative',
   },
   groupImage: {
     width: '100%',
@@ -204,8 +242,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    borderTopLeftRadius: 20, 
-    borderBottomLeftRadius: 20, 
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
   },
   groupInitial: {
     fontSize: 42,
@@ -219,8 +257,8 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     justifyContent: 'center',
-    backgroundColor: "#ffffff", 
-    borderTopRightRadius: 20, 
+    backgroundColor: '#ffffff',
+    borderTopRightRadius: 20,
     borderBottomRightRadius: 20,
   },
   groupName: {
@@ -260,13 +298,13 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'black',
     borderRadius: 10,
-    paddingVertical: 12,
+    paddingVertical: 10,
     paddingHorizontal: 16,
     marginTop: 8,
-    marginBottom: 16,
+    marginBottom: 100,
     alignItems: 'center',
     justifyContent: 'center',
-    width: "70%",
+    width: '60%',
     alignSelf: 'center',
     flexDirection: 'row',
     gap: 12,
@@ -276,6 +314,29 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: 'black',
     letterSpacing: 0.5,
+  },
+  expenseFab: {
+    position: 'absolute',
+    bottom: 24,
+    right: 20,
+    left: 20,
+    backgroundColor: '#00b894',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    borderRadius: 30,
+    elevation: 6,
+    shadowColor: '#00b894',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 8,
+    gap: 8,
+  },
+  expenseFabText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 16,
   },
 });
 

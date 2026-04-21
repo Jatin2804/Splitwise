@@ -47,7 +47,7 @@ const TabNavigator = () => {
           options={{ title: 'Account' }}
         />
       </Tab.Navigator>
-      <FabController />
+      {/* <FabController /> */}
     </View>
   );
 };

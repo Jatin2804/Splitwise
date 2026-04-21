@@ -1,22 +1,41 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { User, Group, Expense, generateMockUsers, generateMockGroups } from '../data/mockData';
+import {
+  User,
+  Group,
+  Expense,
+  ExpenseSplit,
+  Activity,
+  ActivityAction,
+} from '../data/types';
+import { MOCK_USERS, MOCK_GROUPS, MOCK_ACTIVITIES } from '../data/mockData';
 
 export interface AppContextType {
   users: User[];
   groups: Group[];
+  activities: Activity[];
   isLoading: boolean;
-  addUser: (user: Omit<User, 'id'>) => Promise<User>;
-  updateUser: (id: string, updates: Partial<User>) => Promise<User | undefined>;
-  deleteUser: (id: string) => Promise<boolean>;
+  // Users
   getUserById: (id: string) => User | undefined;
+  // Groups
   addGroup: (group: Omit<Group, 'id' | 'expenses'>) => Promise<Group>;
-  updateGroup: (id: string, updates: Partial<Group>) => Promise<Group | undefined>;
+  updateGroup: (
+    id: string,
+    updates: Partial<Group>,
+  ) => Promise<Group | undefined>;
   deleteGroup: (id: string) => Promise<boolean>;
   getGroupById: (id: string) => Group | undefined;
+  // Expenses
   getExpensesByGroupId: (groupId: string) => Expense[];
-  addExpense: (groupId: string, expense: Omit<Expense, 'id' | 'createddate'>) => Promise<Expense | undefined>;
-  updateExpense: (groupId: string, expenseId: string, updates: Partial<Expense>) => Promise<Expense | undefined>;
+  addExpense: (
+    groupId: string,
+    expense: Omit<Expense, 'id' | 'createddate'>,
+  ) => Promise<Expense | undefined>;
+  updateExpense: (
+    groupId: string,
+    expenseId: string,
+    updates: Partial<Expense>,
+  ) => Promise<Expense | undefined>;
   deleteExpense: (groupId: string, expenseId: string) => Promise<boolean>;
 }
 
@@ -24,219 +43,266 @@ export const AppContext = createContext<AppContextType | undefined>(undefined);
 
 const USERS_STORAGE_KEY = '@splitwise_users';
 const GROUPS_STORAGE_KEY = '@splitwise_groups';
+const ACTIVITIES_STORAGE_KEY = '@splitwise_activities';
+const DATA_VERSION_KEY = '@splitwise_data_version';
+const CURRENT_DATA_VERSION = '2'; // bump this to force-reset stored data
+
+let _idCounter = 100;
+const genId = (prefix: string) => `${prefix}_${++_idCounter}_${Date.now()}`;
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const initializeData = async () => {
+    const init = async () => {
       try {
-        const storedUsers = await AsyncStorage.getItem(USERS_STORAGE_KEY);
-        const storedGroups = await AsyncStorage.getItem(GROUPS_STORAGE_KEY);
+        const [storedVersion, storedUsers, storedGroups, storedActivities] =
+          await Promise.all([
+            AsyncStorage.getItem(DATA_VERSION_KEY),
+            AsyncStorage.getItem(USERS_STORAGE_KEY),
+            AsyncStorage.getItem(GROUPS_STORAGE_KEY),
+            AsyncStorage.getItem(ACTIVITIES_STORAGE_KEY),
+          ]);
 
-        if (storedUsers && storedGroups) {
-          setUsers(JSON.parse(storedUsers));
-          setGroups(JSON.parse(storedGroups));
+        const isFresh =
+          storedVersion === CURRENT_DATA_VERSION && storedUsers && storedGroups;
+
+        if (isFresh) {
+          setUsers(JSON.parse(storedUsers!));
+          setGroups(JSON.parse(storedGroups!));
+          setActivities(
+            storedActivities ? JSON.parse(storedActivities) : MOCK_ACTIVITIES,
+          );
         } else {
-          const demoUsers = generateMockUsers(10);
-          const demoGroups = generateMockGroups(5);
-          
-          await AsyncStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(demoUsers));
-          await AsyncStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(demoGroups));
-
-          setUsers(demoUsers);
-          setGroups(demoGroups);
+          await Promise.all([
+            AsyncStorage.setItem(DATA_VERSION_KEY, CURRENT_DATA_VERSION),
+            AsyncStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(MOCK_USERS)),
+            AsyncStorage.setItem(
+              GROUPS_STORAGE_KEY,
+              JSON.stringify(MOCK_GROUPS),
+            ),
+            AsyncStorage.setItem(
+              ACTIVITIES_STORAGE_KEY,
+              JSON.stringify(MOCK_ACTIVITIES),
+            ),
+          ]);
+          setUsers(MOCK_USERS);
+          setGroups(MOCK_GROUPS);
+          setActivities(MOCK_ACTIVITIES);
         }
-      } catch (error) {
-        console.error('Failed to initialize app data:', error);
+      } catch (err) {
+        console.error('Failed to initialize app data:', err);
+        setUsers(MOCK_USERS);
+        setGroups(MOCK_GROUPS);
+        setActivities(MOCK_ACTIVITIES);
       } finally {
         setIsLoading(false);
       }
     };
-
-    initializeData();
+    init();
   }, []);
 
-  // ========================
-  // USER CRUD
-  // ========================
-  const getUserById = (id: string): User | undefined => {
-    return users.find(user => user.id === id);
-  };
-
-  const addUser = async (user: Omit<User, 'id'>): Promise<User> => {
-    const { faker } = await import('@faker-js/faker');
-    const newUser: User = { ...user, id: faker.string.uuid() };
-    const newUsers = [...users, newUser];
-    setUsers(newUsers);
-    await AsyncStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(newUsers));
-    return newUser;
-  };
-
-  const updateUser = async (id: string, updates: Partial<User>): Promise<User | undefined> => {
-    let updatedUser: User | undefined;
-    const newUsers = users.map((u) => {
-      if (u.id === id) {
-        updatedUser = { ...u, ...updates };
-        return updatedUser;
-      }
-      return u;
-    });
-    
-    if (updatedUser) {
-      setUsers(newUsers);
-      await AsyncStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(newUsers));
-    }
-    return updatedUser;
-  };
-
-  const deleteUser = async (id: string): Promise<boolean> => {
-    const initialLength = users.length;
-    const newUsers = users.filter(user => user.id !== id);
-    
-    if (newUsers.length < initialLength) {
-      setUsers(newUsers);
-      await AsyncStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(newUsers));
-      return true;
-    }
-    return false;
-  };
-
-  // ========================
-  // GROUP CRUD
-  // ========================
-  const getGroupById = (id: string): Group | undefined => {
-    return groups.find(group => group.id === id);
-  };
-
-  const addGroup = async (group: Omit<Group, 'id' | 'expenses'>): Promise<Group> => {
-    const { faker } = await import('@faker-js/faker');
-    const newGroup: Group = { 
-      ...group, 
-      id: faker.string.uuid(), 
-      expenses: [] 
+  // ── Activity Helpers ──────────────────────────────────────────────────────
+  const pushActivity = async (
+    action: ActivityAction,
+    description: string,
+    meta: Partial<Activity> = {},
+  ) => {
+    const entry: Activity = {
+      id: genId('act'),
+      action,
+      description,
+      timestamp: new Date().toISOString(),
+      ...meta,
     };
-    const newGroups = [...groups, newGroup];
-    setGroups(newGroups);
-    await AsyncStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(newGroups));
+    setActivities(prev => {
+      const next = [entry, ...prev];
+      AsyncStorage.setItem(ACTIVITIES_STORAGE_KEY, JSON.stringify(next));
+      return next;
+    });
+  };
+
+  // ── Group CRUD ────────────────────────────────────────────────────────────
+  const getGroupById = (id: string) => groups.find(g => g.id === id);
+
+  const addGroup = async (
+    group: Omit<Group, 'id' | 'expenses'>,
+  ): Promise<Group> => {
+    const newGroup: Group = { ...group, id: genId('g'), expenses: [] };
+    const next = [...groups, newGroup];
+    setGroups(next);
+    await AsyncStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(next));
+    await pushActivity(
+      'GROUP_CREATED',
+      `Group "${newGroup.name}" was created`,
+      { groupId: newGroup.id, groupName: newGroup.name },
+    );
     return newGroup;
   };
 
-  const updateGroup = async (id: string, updates: Partial<Group>): Promise<Group | undefined> => {
-    let updatedGroup: Group | undefined;
-    const newGroups = groups.map((g) => {
+  const updateGroup = async (
+    id: string,
+    updates: Partial<Group>,
+  ): Promise<Group | undefined> => {
+    let updated: Group | undefined;
+    const next = groups.map(g => {
       if (g.id === id) {
-        updatedGroup = { ...g, ...updates };
-        return updatedGroup;
+        updated = { ...g, ...updates };
+        return updated;
       }
       return g;
     });
-    
-    if (updatedGroup) {
-      setGroups(newGroups);
-      await AsyncStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(newGroups));
+    if (updated) {
+      setGroups(next);
+      await AsyncStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(next));
+      await pushActivity(
+        'GROUP_UPDATED',
+        `Group "${updated.name}" was updated`,
+        { groupId: id, groupName: updated.name },
+      );
     }
-    return updatedGroup;
+    return updated;
   };
 
   const deleteGroup = async (id: string): Promise<boolean> => {
-    const initialLength = groups.length;
-    const newGroups = groups.filter(group => group.id !== id);
-    
-    if (newGroups.length < initialLength) {
-      setGroups(newGroups);
-      await AsyncStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(newGroups));
+    const group = getGroupById(id);
+    const next = groups.filter(g => g.id !== id);
+    if (next.length < groups.length) {
+      setGroups(next);
+      await AsyncStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(next));
+      await pushActivity(
+        'GROUP_DELETED',
+        `Group "${group?.name}" was deleted`,
+        { groupId: id, groupName: group?.name },
+      );
       return true;
     }
     return false;
   };
 
-  // ========================
-  // EXPENSE CRUD
-  // ========================
+  // ── Expense CRUD ──────────────────────────────────────────────────────────
   const getExpensesByGroupId = (groupId: string): Expense[] => {
-    const group = getGroupById(groupId);
-    return group ? group.expenses : [];
+    return getGroupById(groupId)?.expenses ?? [];
+  };
+
+  const _recalcGroup = (g: Group): Partial<Group> => {
+    const totalspend = g.expenses.reduce((s, e) => s + e.amount, 0);
+    return { totalspend };
   };
 
   const addExpense = async (
-    groupId: string, 
-    expense: Omit<Expense, 'id' | 'createddate'>
+    groupId: string,
+    expense: Omit<Expense, 'id' | 'createddate'>,
   ): Promise<Expense | undefined> => {
     const group = getGroupById(groupId);
     if (!group) return undefined;
-
-    const { faker } = await import('@faker-js/faker');
-    const newExpense: Expense = { 
-      ...expense, 
-      id: faker.string.uuid(), 
-      createddate: new Date() 
+    const newExp: Expense = {
+      ...expense,
+      id: genId('exp'),
+      createddate: new Date().toISOString(),
     };
-    
-    const updatedExpenses = [...group.expenses, newExpense];
-    const updatedGroup = { ...group, expenses: updatedExpenses };
-    
-    await updateGroup(groupId, updatedGroup);
-    return newExpense;
+    const updatedExpenses = [...group.expenses, newExp];
+    const updatedGroup = {
+      ...group,
+      expenses: updatedExpenses,
+      ..._recalcGroup({ ...group, expenses: updatedExpenses }),
+    };
+    const next = groups.map(g => (g.id === groupId ? updatedGroup : g));
+    setGroups(next);
+    await AsyncStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(next));
+    await pushActivity(
+      'EXPENSE_ADDED',
+      `₹${expense.amount.toLocaleString('en-IN')} "${expense.name}" added to ${
+        group.name
+      }`,
+      { groupId, groupName: group.name, expenseId: newExp.id },
+    );
+    return newExp;
   };
 
   const updateExpense = async (
-    groupId: string, 
-    expenseId: string, 
-    updates: Partial<Expense>
+    groupId: string,
+    expenseId: string,
+    updates: Partial<Expense>,
   ): Promise<Expense | undefined> => {
     const group = getGroupById(groupId);
     if (!group) return undefined;
-
-    let updatedExpense: Expense | undefined;
-    const updatedExpenses = group.expenses.map(exp => {
-      if (exp.id === expenseId) {
-        updatedExpense = { ...exp, ...updates };
-        return updatedExpense;
+    let updated: Expense | undefined;
+    const updatedExpenses = group.expenses.map(e => {
+      if (e.id === expenseId) {
+        updated = { ...e, ...updates };
+        return updated;
       }
-      return exp;
+      return e;
     });
-
-    if (updatedExpense) {
-      await updateGroup(groupId, { expenses: updatedExpenses });
+    if (updated) {
+      const updatedGroup = {
+        ...group,
+        expenses: updatedExpenses,
+        ..._recalcGroup({ ...group, expenses: updatedExpenses }),
+      };
+      const next = groups.map(g => (g.id === groupId ? updatedGroup : g));
+      setGroups(next);
+      await AsyncStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(next));
+      await pushActivity(
+        'EXPENSE_UPDATED',
+        `Expense "${updated.name}" updated in ${group.name}`,
+        { groupId, groupName: group.name, expenseId },
+      );
     }
-    return updatedExpense;
+    return updated;
   };
 
-  const deleteExpense = async (groupId: string, expenseId: string): Promise<boolean> => {
+  const deleteExpense = async (
+    groupId: string,
+    expenseId: string,
+  ): Promise<boolean> => {
     const group = getGroupById(groupId);
     if (!group) return false;
-
-    const initialLength = group.expenses.length;
-    const filteredExpenses = group.expenses.filter(exp => exp.id !== expenseId);
-    
-    if (filteredExpenses.length < initialLength) {
-      await updateGroup(groupId, { expenses: filteredExpenses });
+    const exp = group.expenses.find(e => e.id === expenseId);
+    const updatedExpenses = group.expenses.filter(e => e.id !== expenseId);
+    if (updatedExpenses.length < group.expenses.length) {
+      const updatedGroup = {
+        ...group,
+        expenses: updatedExpenses,
+        ..._recalcGroup({ ...group, expenses: updatedExpenses }),
+      };
+      const next = groups.map(g => (g.id === groupId ? updatedGroup : g));
+      setGroups(next);
+      await AsyncStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(next));
+      await pushActivity(
+        'EXPENSE_DELETED',
+        `Expense "${exp?.name}" deleted from ${group.name}`,
+        { groupId, groupName: group.name },
+      );
       return true;
     }
     return false;
   };
 
+  const getUserById = (id: string) => users.find(u => u.id === id);
+
   return (
-    <AppContext.Provider value={{ 
-      users, 
-      groups, 
-      isLoading, 
-      addUser, 
-      updateUser, 
-      deleteUser,
-      getUserById,
-      addGroup, 
-      updateGroup, 
-      deleteGroup,
-      getGroupById,
-      getExpensesByGroupId,
-      addExpense,
-      updateExpense,
-      deleteExpense
-    }}>
+    <AppContext.Provider
+      value={{
+        users,
+        groups,
+        activities,
+        isLoading,
+        getUserById,
+        addGroup,
+        updateGroup,
+        deleteGroup,
+        getGroupById,
+        getExpensesByGroupId,
+        addExpense,
+        updateExpense,
+        deleteExpense,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );

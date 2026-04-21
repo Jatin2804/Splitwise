@@ -1,86 +1,593 @@
-import { faker } from '@faker-js/faker';
+import { User, Group, Expense, Activity } from './types';
 
-export interface User {
-  id: string;
-  name: string;
-  avatar: string;
-  phoneNumber: string;
-  email: string;
-  moneySpend: number;
-  moneyOwned: number;
-  moneyReceived: number;
-}
+// ─── 10 Static Users ────────────────────────────────────────────────────────
+export const MOCK_USERS: User[] = [
+  {
+    id: 'u1',
+    name: 'Ravi Sharma',
+    email: 'ravi@example.com',
+    phoneNumber: '+91 98765 00001',
+    avatar: 'https://i.pravatar.cc/150?img=1',
+    moneySpend: 4500,
+    moneyOwned: 1200,
+    moneyReceived: 800,
+  },
+  {
+    id: 'u2',
+    name: 'Priya Singh',
+    email: 'priya@example.com',
+    phoneNumber: '+91 98765 00002',
+    avatar: 'https://i.pravatar.cc/150?img=2',
+    moneySpend: 3200,
+    moneyOwned: 600,
+    moneyReceived: 1500,
+  },
+  {
+    id: 'u3',
+    name: 'Amit Patel',
+    email: 'amit@example.com',
+    phoneNumber: '+91 98765 00003',
+    avatar: 'https://i.pravatar.cc/150?img=3',
+    moneySpend: 5100,
+    moneyOwned: 400,
+    moneyReceived: 2200,
+  },
+  {
+    id: 'u4',
+    name: 'Sneha Verma',
+    email: 'sneha@example.com',
+    phoneNumber: '+91 98765 00004',
+    avatar: 'https://i.pravatar.cc/150?img=4',
+    moneySpend: 2700,
+    moneyOwned: 900,
+    moneyReceived: 300,
+  },
+  {
+    id: 'u5',
+    name: 'Karan Mehta',
+    email: 'karan@example.com',
+    phoneNumber: '+91 98765 00005',
+    avatar: 'https://i.pravatar.cc/150?img=5',
+    moneySpend: 6300,
+    moneyOwned: 200,
+    moneyReceived: 3100,
+  },
+  {
+    id: 'u6',
+    name: 'Neha Joshi',
+    email: 'neha@example.com',
+    phoneNumber: '+91 98765 00006',
+    avatar: 'https://i.pravatar.cc/150?img=6',
+    moneySpend: 1900,
+    moneyOwned: 1500,
+    moneyReceived: 100,
+  },
+  {
+    id: 'u7',
+    name: 'Raj Kumar',
+    email: 'raj@example.com',
+    phoneNumber: '+91 98765 00007',
+    avatar: 'https://i.pravatar.cc/150?img=7',
+    moneySpend: 3800,
+    moneyOwned: 700,
+    moneyReceived: 900,
+  },
+  {
+    id: 'u8',
+    name: 'Ananya Gupta',
+    email: 'ananya@example.com',
+    phoneNumber: '+91 98765 00008',
+    avatar: 'https://i.pravatar.cc/150?img=8',
+    moneySpend: 4100,
+    moneyOwned: 300,
+    moneyReceived: 1800,
+  },
+  {
+    id: 'u9',
+    name: 'Vikram Nair',
+    email: 'vikram@example.com',
+    phoneNumber: '+91 98765 00009',
+    avatar: 'https://i.pravatar.cc/150?img=9',
+    moneySpend: 2200,
+    moneyOwned: 1100,
+    moneyReceived: 450,
+  },
+  {
+    id: 'u10',
+    name: 'Meera Reddy',
+    email: 'meera@example.com',
+    phoneNumber: '+91 98765 00010',
+    avatar: 'https://i.pravatar.cc/150?img=10',
+    moneySpend: 3500,
+    moneyOwned: 500,
+    moneyReceived: 1200,
+  },
+];
 
-export interface Expense {
-  id: string;
-  name: string;
-  description: string;
-  createddate: Date;
-  amount: number;
-}
+// ─── 5 Static Groups with Expenses & Members ─────────────────────────────────
 
-export interface Group {
-  id: string;
-  createdAt: Date;
-  name: string;
-  avatar: string;
-  totalspend: number;
-  createdBy: string;
-  totalMembers: number;
-  members: User[];
-  type: string;
-  setteledAmount: number;
-  unsetteledAmount: number;
-  startDate: Date;
-  endDate: Date;
-  expenses: Expense[];
-}
+const goaExpenses: Expense[] = [
+  {
+    id: 'e1',
+    name: 'Flight Tickets',
+    description: 'Return flights Mumbai-Goa',
+    createddate: '2024-12-01T08:00:00Z',
+    amount: 8400,
+    paidBy: 'u1',
+    category: 'Travel',
+    splits: [
+      { userId: 'u1', amount: 2100 },
+      { userId: 'u2', amount: 2100 },
+      { userId: 'u3', amount: 2100 },
+      { userId: 'u5', amount: 2100 },
+    ],
+  },
+  {
+    id: 'e2',
+    name: 'Beach Hotel',
+    description: 'Hotel Calangute 3 nights',
+    createddate: '2024-12-02T10:00:00Z',
+    amount: 12000,
+    paidBy: 'u3',
+    category: 'Accommodation',
+    splits: [
+      { userId: 'u1', amount: 3000 },
+      { userId: 'u2', amount: 3000 },
+      { userId: 'u3', amount: 3000 },
+      { userId: 'u5', amount: 3000 },
+    ],
+  },
+  {
+    id: 'e3',
+    name: 'Beach Shack Dinner',
+    description: 'Seafood dinner at Thalassa',
+    createddate: '2024-12-03T20:00:00Z',
+    amount: 3200,
+    paidBy: 'u2',
+    category: 'Food',
+    splits: [
+      { userId: 'u1', amount: 800 },
+      { userId: 'u2', amount: 800 },
+      { userId: 'u3', amount: 800 },
+      { userId: 'u5', amount: 800 },
+    ],
+  },
+  {
+    id: 'e4',
+    name: 'Scuba Diving',
+    description: 'Scuba diving session Grand Island',
+    createddate: '2024-12-04T09:00:00Z',
+    amount: 5000,
+    paidBy: 'u5',
+    category: 'Entertainment',
+    splits: [
+      { userId: 'u1', amount: 1250 },
+      { userId: 'u2', amount: 1250 },
+      { userId: 'u3', amount: 1250 },
+      { userId: 'u5', amount: 1250 },
+    ],
+  },
+  {
+    id: 'e5',
+    name: 'Taxi & Auto',
+    description: 'Local transport throughout trip',
+    createddate: '2024-12-05T12:00:00Z',
+    amount: 1800,
+    paidBy: 'u1',
+    category: 'Travel',
+    splits: [
+      { userId: 'u1', amount: 450 },
+      { userId: 'u2', amount: 450 },
+      { userId: 'u3', amount: 450 },
+      { userId: 'u5', amount: 450 },
+    ],
+  },
+];
 
-export const generateMockUsers = (count: number): User[] => {
-  return Array.from({ length: count }).map(() => ({
-    id: faker.string.uuid(),
-    name: faker.person.fullName(),
-    avatar: faker.image.avatar(),
-    phoneNumber: faker.phone.number(),
-    email: faker.internet.email(),
-    moneySpend: faker.number.float({ min: 0, max: 1000, fractionDigits: 2 }),
-    moneyOwned: faker.number.float({ min: 0, max: 500, fractionDigits: 2 }),
-    moneyReceived: faker.number.float({ min: 0, max: 500, fractionDigits: 2 }),
-  }));
-};
+const flatExpenses: Expense[] = [
+  {
+    id: 'e6',
+    name: 'Monthly Rent',
+    description: 'December rent',
+    createddate: '2024-12-01T00:00:00Z',
+    amount: 18000,
+    paidBy: 'u4',
+    category: 'Accommodation',
+    splits: [
+      { userId: 'u4', amount: 6000 },
+      { userId: 'u6', amount: 6000 },
+      { userId: 'u7', amount: 6000 },
+    ],
+  },
+  {
+    id: 'e7',
+    name: 'Electricity Bill',
+    description: 'November electricity',
+    createddate: '2024-12-05T00:00:00Z',
+    amount: 1500,
+    paidBy: 'u6',
+    category: 'Other',
+    splits: [
+      { userId: 'u4', amount: 500 },
+      { userId: 'u6', amount: 500 },
+      { userId: 'u7', amount: 500 },
+    ],
+  },
+  {
+    id: 'e8',
+    name: 'Groceries',
+    description: 'Monthly grocery run',
+    createddate: '2024-12-10T14:00:00Z',
+    amount: 4200,
+    paidBy: 'u7',
+    category: 'Food',
+    splits: [
+      { userId: 'u4', amount: 1400 },
+      { userId: 'u6', amount: 1400 },
+      { userId: 'u7', amount: 1400 },
+    ],
+  },
+  {
+    id: 'e9',
+    name: 'Internet Bill',
+    description: 'Broadband December',
+    createddate: '2024-12-15T00:00:00Z',
+    amount: 900,
+    paidBy: 'u4',
+    category: 'Other',
+    splits: [
+      { userId: 'u4', amount: 300 },
+      { userId: 'u6', amount: 300 },
+      { userId: 'u7', amount: 300 },
+    ],
+  },
+];
 
-export const generateMockExpenses = (count: number): Expense[] => {
-  return Array.from({ length: count }).map(() => ({
-    id: faker.string.uuid(),
-    name: faker.commerce.productName(),
-    description: faker.commerce.productDescription(),
-    createddate: faker.date.recent(),
-    amount: faker.number.float({ min: 5, max: 500, fractionDigits: 2 }),
-  }));
-};
+const movieExpenses: Expense[] = [
+  {
+    id: 'e10',
+    name: 'Oppenheimer Tickets',
+    description: 'IMAX weekend show',
+    createddate: '2024-11-15T18:00:00Z',
+    amount: 1800,
+    paidBy: 'u8',
+    category: 'Entertainment',
+    splits: [
+      { userId: 'u8', amount: 600 },
+      { userId: 'u9', amount: 600 },
+      { userId: 'u10', amount: 600 },
+    ],
+  },
+  {
+    id: 'e11',
+    name: 'Popcorn & Drinks',
+    description: 'Snacks at the theater',
+    createddate: '2024-11-15T19:00:00Z',
+    amount: 720,
+    paidBy: 'u9',
+    category: 'Food',
+    splits: [
+      { userId: 'u8', amount: 240 },
+      { userId: 'u9', amount: 240 },
+      { userId: 'u10', amount: 240 },
+    ],
+  },
+  {
+    id: 'e12',
+    name: 'Dinner After',
+    description: 'Post-movie dinner at Pizza Hut',
+    createddate: '2024-11-15T22:00:00Z',
+    amount: 2100,
+    paidBy: 'u10',
+    category: 'Food',
+    splits: [
+      { userId: 'u8', amount: 700 },
+      { userId: 'u9', amount: 700 },
+      { userId: 'u10', amount: 700 },
+    ],
+  },
+];
 
-export const generateMockGroups = (count: number, usersPerGroup: number = 5, expensesPerGroup: number = 10): Group[] => {
-  return Array.from({ length: count }).map(() => {
-    const members = generateMockUsers(usersPerGroup);
-    const expenses = generateMockExpenses(expensesPerGroup);
-    const totalspend = expenses.reduce((acc, curr) => acc + curr.amount, 0);
-    const setteledAmount = faker.number.float({ min: 0, max: totalspend, fractionDigits: 2 });
+const workExpenses: Expense[] = [
+  {
+    id: 'e13',
+    name: 'Team Lunch',
+    description: 'Quarterly team lunch',
+    createddate: '2024-11-20T13:00:00Z',
+    amount: 6000,
+    paidBy: 'u1',
+    category: 'Food',
+    splits: [
+      { userId: 'u1', amount: 1500 },
+      { userId: 'u3', amount: 1500 },
+      { userId: 'u8', amount: 1500 },
+      { userId: 'u10', amount: 1500 },
+    ],
+  },
+  {
+    id: 'e14',
+    name: 'Conference Pass',
+    description: 'ReactConf 2024 tickets',
+    createddate: '2024-11-22T10:00:00Z',
+    amount: 12000,
+    paidBy: 'u3',
+    category: 'Entertainment',
+    splits: [
+      { userId: 'u1', amount: 3000 },
+      { userId: 'u3', amount: 3000 },
+      { userId: 'u8', amount: 3000 },
+      { userId: 'u10', amount: 3000 },
+    ],
+  },
+  {
+    id: 'e15',
+    name: 'Office Supplies',
+    description: 'Stationery and desk items',
+    createddate: '2024-11-25T11:00:00Z',
+    amount: 2400,
+    paidBy: 'u8',
+    category: 'Other',
+    splits: [
+      { userId: 'u1', amount: 600 },
+      { userId: 'u3', amount: 600 },
+      { userId: 'u8', amount: 600 },
+      { userId: 'u10', amount: 600 },
+    ],
+  },
+];
 
-    return {
-      id: faker.string.uuid(),
-      createdAt: faker.date.past(),
-      name: faker.company.name(),
-      avatar: faker.image.avatar(),
-      totalspend,
-      createdBy: members[0].id,
-      totalMembers: members.length,
-      members,
-      type: faker.helpers.arrayElement(['Trip', 'Home', 'Couple', 'Other']),
-      setteledAmount,
-      unsetteledAmount: totalspend - setteledAmount,
-      startDate: faker.date.past(),
-      endDate: faker.date.future(),
-      expenses,
-    };
-  });
-};
+const manaliExpenses: Expense[] = [
+  {
+    id: 'e16',
+    name: 'Train Tickets',
+    description: 'Delhi–Chandigarh train + cab',
+    createddate: '2025-01-05T07:00:00Z',
+    amount: 7200,
+    paidBy: 'u2',
+    category: 'Travel',
+    splits: [
+      { userId: 'u2', amount: 1800 },
+      { userId: 'u4', amount: 1800 },
+      { userId: 'u6', amount: 1800 },
+      { userId: 'u9', amount: 1800 },
+    ],
+  },
+  {
+    id: 'e17',
+    name: 'Snow Cottage',
+    description: 'Manali homestay 4 nights',
+    createddate: '2025-01-06T14:00:00Z',
+    amount: 16000,
+    paidBy: 'u4',
+    category: 'Accommodation',
+    splits: [
+      { userId: 'u2', amount: 4000 },
+      { userId: 'u4', amount: 4000 },
+      { userId: 'u6', amount: 4000 },
+      { userId: 'u9', amount: 4000 },
+    ],
+  },
+  {
+    id: 'e18',
+    name: 'Ski Equipment',
+    description: 'Ski rental Solang Valley',
+    createddate: '2025-01-07T09:00:00Z',
+    amount: 4800,
+    paidBy: 'u6',
+    category: 'Entertainment',
+    splits: [
+      { userId: 'u2', amount: 1200 },
+      { userId: 'u4', amount: 1200 },
+      { userId: 'u6', amount: 1200 },
+      { userId: 'u9', amount: 1200 },
+    ],
+  },
+  {
+    id: 'e19',
+    name: 'Meals & Cafes',
+    description: 'All meals over 4 days',
+    createddate: '2025-01-08T19:00:00Z',
+    amount: 5600,
+    paidBy: 'u9',
+    category: 'Food',
+    splits: [
+      { userId: 'u2', amount: 1400 },
+      { userId: 'u4', amount: 1400 },
+      { userId: 'u6', amount: 1400 },
+      { userId: 'u9', amount: 1400 },
+    ],
+  },
+  {
+    id: 'e20',
+    name: 'Bonfire Night',
+    description: 'Bonfire + local music event',
+    createddate: '2025-01-09T21:00:00Z',
+    amount: 2000,
+    paidBy: 'u2',
+    category: 'Entertainment',
+    splits: [
+      { userId: 'u2', amount: 500 },
+      { userId: 'u4', amount: 500 },
+      { userId: 'u6', amount: 500 },
+      { userId: 'u9', amount: 500 },
+    ],
+  },
+];
+
+const calcTotalSpend = (expenses: Expense[]) =>
+  expenses.reduce((s, e) => s + e.amount, 0);
+
+export const MOCK_GROUPS: Group[] = [
+  {
+    id: 'g1',
+    name: 'Goa Trip 🏖️',
+    type: 'Trip',
+    avatar: '',
+    createdBy: 'u1',
+    createdAt: '2024-11-25T10:00:00Z',
+    startDate: '2024-12-01T00:00:00Z',
+    endDate: '2024-12-06T00:00:00Z',
+    members: [MOCK_USERS[0], MOCK_USERS[1], MOCK_USERS[2], MOCK_USERS[4]],
+    totalMembers: 4,
+    expenses: goaExpenses,
+    totalspend: calcTotalSpend(goaExpenses),
+    setteledAmount: 8200,
+    unsetteledAmount: calcTotalSpend(goaExpenses) - 8200,
+  },
+  {
+    id: 'g2',
+    name: 'Andheri Flat 🏠',
+    type: 'Home',
+    avatar: '',
+    createdBy: 'u4',
+    createdAt: '2024-10-01T10:00:00Z',
+    startDate: '2024-10-01T00:00:00Z',
+    endDate: '2025-09-30T00:00:00Z',
+    members: [MOCK_USERS[3], MOCK_USERS[5], MOCK_USERS[6]],
+    totalMembers: 3,
+    expenses: flatExpenses,
+    totalspend: calcTotalSpend(flatExpenses),
+    setteledAmount: 12400,
+    unsetteledAmount: calcTotalSpend(flatExpenses) - 12400,
+  },
+  {
+    id: 'g3',
+    name: 'Movie Squad 🎬',
+    type: 'Other',
+    avatar: '',
+    createdBy: 'u8',
+    createdAt: '2024-11-10T10:00:00Z',
+    startDate: '2024-11-10T00:00:00Z',
+    endDate: '2025-11-10T00:00:00Z',
+    members: [MOCK_USERS[7], MOCK_USERS[8], MOCK_USERS[9]],
+    totalMembers: 3,
+    expenses: movieExpenses,
+    totalspend: calcTotalSpend(movieExpenses),
+    setteledAmount: 2100,
+    unsetteledAmount: calcTotalSpend(movieExpenses) - 2100,
+  },
+  {
+    id: 'g4',
+    name: 'Work Team 💼',
+    type: 'Other',
+    avatar: '',
+    createdBy: 'u1',
+    createdAt: '2024-11-01T10:00:00Z',
+    startDate: '2024-11-01T00:00:00Z',
+    endDate: '2025-11-01T00:00:00Z',
+    members: [MOCK_USERS[0], MOCK_USERS[2], MOCK_USERS[7], MOCK_USERS[9]],
+    totalMembers: 4,
+    expenses: workExpenses,
+    totalspend: calcTotalSpend(workExpenses),
+    setteledAmount: 8400,
+    unsetteledAmount: calcTotalSpend(workExpenses) - 8400,
+  },
+  {
+    id: 'g5',
+    name: 'Manali Snow ❄️',
+    type: 'Trip',
+    avatar: '',
+    createdBy: 'u2',
+    createdAt: '2024-12-20T10:00:00Z',
+    startDate: '2025-01-05T00:00:00Z',
+    endDate: '2025-01-10T00:00:00Z',
+    members: [MOCK_USERS[1], MOCK_USERS[3], MOCK_USERS[5], MOCK_USERS[8]],
+    totalMembers: 4,
+    expenses: manaliExpenses,
+    totalspend: calcTotalSpend(manaliExpenses),
+    setteledAmount: 15000,
+    unsetteledAmount: calcTotalSpend(manaliExpenses) - 15000,
+  },
+];
+
+export const MOCK_ACTIVITIES: Activity[] = [
+  {
+    id: 'a1',
+    action: 'GROUP_CREATED',
+    description: 'Group "Goa Trip 🏖️" was created',
+    timestamp: '2024-11-25T10:00:00Z',
+    groupId: 'g1',
+    groupName: 'Goa Trip 🏖️',
+  },
+  {
+    id: 'a2',
+    action: 'GROUP_CREATED',
+    description: 'Group "Andheri Flat 🏠" was created',
+    timestamp: '2024-10-01T10:00:00Z',
+    groupId: 'g2',
+    groupName: 'Andheri Flat 🏠',
+  },
+  {
+    id: 'a3',
+    action: 'GROUP_CREATED',
+    description: 'Group "Movie Squad 🎬" was created',
+    timestamp: '2024-11-10T10:00:00Z',
+    groupId: 'g3',
+    groupName: 'Movie Squad 🎬',
+  },
+  {
+    id: 'a4',
+    action: 'GROUP_CREATED',
+    description: 'Group "Work Team 💼" was created',
+    timestamp: '2024-11-01T10:00:00Z',
+    groupId: 'g4',
+    groupName: 'Work Team 💼',
+  },
+  {
+    id: 'a5',
+    action: 'GROUP_CREATED',
+    description: 'Group "Manali Snow ❄️" was created',
+    timestamp: '2024-12-20T10:00:00Z',
+    groupId: 'g5',
+    groupName: 'Manali Snow ❄️',
+  },
+  {
+    id: 'a6',
+    action: 'EXPENSE_ADDED',
+    description: '₹8,400 "Flight Tickets" added to Goa Trip',
+    timestamp: '2024-12-01T08:00:00Z',
+    groupId: 'g1',
+    groupName: 'Goa Trip 🏖️',
+    expenseId: 'e1',
+  },
+  {
+    id: 'a7',
+    action: 'EXPENSE_ADDED',
+    description: '₹12,000 "Beach Hotel" added to Goa Trip',
+    timestamp: '2024-12-02T10:00:00Z',
+    groupId: 'g1',
+    groupName: 'Goa Trip 🏖️',
+    expenseId: 'e2',
+  },
+  {
+    id: 'a8',
+    action: 'EXPENSE_ADDED',
+    description: '₹18,000 "Monthly Rent" added to Andheri Flat',
+    timestamp: '2024-12-01T00:00:00Z',
+    groupId: 'g2',
+    groupName: 'Andheri Flat 🏠',
+    expenseId: 'e6',
+  },
+  {
+    id: 'a9',
+    action: 'EXPENSE_ADDED',
+    description: '₹1,800 "Oppenheimer Tickets" added to Movie Squad',
+    timestamp: '2024-11-15T18:00:00Z',
+    groupId: 'g3',
+    groupName: 'Movie Squad 🎬',
+    expenseId: 'e10',
+  },
+  {
+    id: 'a10',
+    action: 'EXPENSE_ADDED',
+    description: '₹7,200 "Train Tickets" added to Manali Snow',
+    timestamp: '2025-01-05T07:00:00Z',
+    groupId: 'g5',
+    groupName: 'Manali Snow ❄️',
+    expenseId: 'e16',
+  },
+];
+
+// Legacy exports for backward compatibility
+export const generateMockUsers = () => MOCK_USERS;
+export const generateMockGroups = () => MOCK_GROUPS;
