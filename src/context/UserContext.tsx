@@ -12,7 +12,9 @@ export interface UserContextType {
   updateCurrentUser: (updates: Partial<User>) => Promise<void>;
 }
 
-export const UserContext = createContext<UserContextType | undefined>(undefined);
+export const UserContext = createContext<UserContextType | undefined>(
+  undefined,
+);
 
 const USER_STORAGE_KEY = '@splitwise_current_user';
 
@@ -49,7 +51,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     await AsyncStorage.removeItem(USER_STORAGE_KEY);
   };
 
-  const register = async (name: string, email: string, phone: string): Promise<User> => {
+  const register = async (
+    name: string,
+    email: string,
+    phone: string,
+  ): Promise<User> => {
     const newUser: User = {
       id: genId(),
       name,
@@ -72,7 +78,17 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <UserContext.Provider value={{ currentUser, isLoggedIn: !!currentUser, isLoading, login, logout, register, updateCurrentUser }}>
+    <UserContext.Provider
+      value={{
+        currentUser,
+        isLoggedIn: !!currentUser,
+        isLoading,
+        login,
+        logout,
+        register,
+        updateCurrentUser,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );

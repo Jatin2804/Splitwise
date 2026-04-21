@@ -154,17 +154,17 @@ const EnrollmentScreen = ({ navigation }: any) => {
 
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: '#fff' },
-  scrollContainer: { 
+  scrollContainer: {
     flexGrow: 1,
   },
-  container: { 
-    flex: 1, 
-    justifyContent: 'center', 
+  container: {
+    flex: 1,
+    justifyContent: 'center',
     paddingHorizontal: 28,
     paddingVertical: 20,
   },
-  logoArea: { 
-    alignItems: 'center', 
+  logoArea: {
+    alignItems: 'center',
     marginBottom: 40,
     marginTop: Platform.OS === 'ios' ? 0 : 20,
   },
@@ -182,19 +182,19 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 8,
   },
-  title: { 
-    fontSize: 28, 
-    fontWeight: '800', 
-    color: '#1e272e', 
+  title: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#1e272e',
     marginBottom: 8,
     textAlign: 'center',
   },
-  subtitle: { 
-    fontSize: 15, 
+  subtitle: {
+    fontSize: 15,
     color: '#636e72',
     textAlign: 'center',
   },
-  form: { 
+  form: {
     gap: 16,
     marginBottom: Platform.OS === 'ios' ? 0 : 20,
   },
@@ -209,9 +209,9 @@ const styles = StyleSheet.create({
     height: 54,
   },
   fieldIcon: { marginRight: 12 },
-  input: { 
-    flex: 1, 
-    fontSize: 16, 
+  input: {
+    flex: 1,
+    fontSize: 16,
     color: '#2d3436',
     paddingVertical: Platform.OS === 'ios' ? 12 : 8,
   },

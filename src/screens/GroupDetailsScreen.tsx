@@ -42,7 +42,6 @@ const CATEGORY_COLORS: Record<string, string> = {
   Other: '#00b894',
 };
 
-
 const SettleUpTab = ({
   expenses,
   getUserById,
@@ -116,7 +115,7 @@ const SettleUpTab = ({
                     text: 'Delete',
                     style: 'destructive',
                     onPress: () => {
-                      const groupId = exp.id; 
+                      const groupId = exp.id;
                     },
                   },
                 ])
@@ -297,7 +296,6 @@ const TotalsTab = ({
   );
 };
 
-
 const GroupDetailsScreen = ({ route, navigation }: Props) => {
   const { groupId } = route.params;
   const appCtx = useContext(AppContext);
@@ -382,20 +380,20 @@ const GroupDetailsScreen = ({ route, navigation }: Props) => {
     settledStatus.type === 'owed'
       ? '#00b894'
       : settledStatus.type === 'owes'
-      ? '#d63031'
-      : '#00b894';
+        ? '#d63031'
+        : '#00b894';
   const statusIcon =
     settledStatus.type === 'owed'
       ? 'trending-up'
       : settledStatus.type === 'owes'
-      ? 'trending-down'
-      : 'check-circle';
+        ? 'trending-down'
+        : 'check-circle';
   const statusTitle =
     settledStatus.type === 'owed'
       ? `You are owed ₹${settledStatus.amount.toLocaleString('en-IN')}`
       : settledStatus.type === 'owes'
-      ? `You owe ₹${settledStatus.amount.toLocaleString('en-IN')}`
-      : 'You are all settled up!';
+        ? `You owe ₹${settledStatus.amount.toLocaleString('en-IN')}`
+        : 'You are all settled up!';
   const statusSub =
     settledStatus.type === 'settled'
       ? 'You are settled up in this group as of now.'
@@ -409,7 +407,7 @@ const GroupDetailsScreen = ({ route, navigation }: Props) => {
         {/* Header */}
         <ImageBackground source={bgSource} style={styles.headerImage}>
           <View style={styles.headerOverlay}>
-            <SafeAreaView>
+            <View>
               <View style={styles.headerTop}>
                 <TouchableOpacity
                   onPress={() => navigation.goBack()}
@@ -428,7 +426,7 @@ const GroupDetailsScreen = ({ route, navigation }: Props) => {
                   <Icon name="settings" size={24} color="#fff" />
                 </TouchableOpacity>
               </View>
-            </SafeAreaView>
+            </View>
             <View style={styles.headerBottom}>
               <Text style={styles.groupName}>{group.name}</Text>
               <View style={styles.metaRow}>
@@ -450,7 +448,6 @@ const GroupDetailsScreen = ({ route, navigation }: Props) => {
           </View>
         </ImageBackground>
 
-       
         {group.members.length === 0 && (
           <View style={styles.addMembersWrap}>
             <TouchableOpacity
@@ -763,7 +760,6 @@ const styles = StyleSheet.create({
   },
   fallbackSub: { fontSize: 14, color: '#636e72', textAlign: 'center' },
 
-  
   fab: {
     position: 'absolute',
     bottom: 24,

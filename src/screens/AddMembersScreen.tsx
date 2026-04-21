@@ -1,16 +1,16 @@
 import React, { useContext, useState, useMemo } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TextInput, 
-  TouchableOpacity, 
-  FlatList, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
   SafeAreaView,
   Image,
   KeyboardAvoidingView,
   Platform,
-  Alert
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AppContext } from '../context/AppContext';
@@ -19,8 +19,14 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, SCREEN_NAMES } from '../navigation';
 import { User } from '../data/mockData';
 
-type AddMembersRouteProp = RouteProp<RootStackParamList, typeof SCREEN_NAMES.ADD_MEMBERS>;
-type AddMembersNavigationProp = NativeStackNavigationProp<RootStackParamList, typeof SCREEN_NAMES.ADD_MEMBERS>;
+type AddMembersRouteProp = RouteProp<
+  RootStackParamList,
+  typeof SCREEN_NAMES.ADD_MEMBERS
+>;
+type AddMembersNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  typeof SCREEN_NAMES.ADD_MEMBERS
+>;
 
 interface Props {
   route: AddMembersRouteProp;
@@ -38,9 +44,10 @@ const AddMembersScreen = ({ route, navigation }: Props) => {
   const availableUsers = useMemo(() => {
     if (!context || !group) return [];
     const groupMemberIds = new Set(group.members.map(m => m.id));
-    return context.users.filter(user => 
-      !groupMemberIds.has(user.id) && 
-      user.name.toLowerCase().includes(searchQuery.toLowerCase())
+    return context.users.filter(
+      user =>
+        !groupMemberIds.has(user.id) &&
+        user.name.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [context, group, searchQuery]);
 
@@ -57,18 +64,21 @@ const AddMembersScreen = ({ route, navigation }: Props) => {
 
   const handleAddMembers = async () => {
     if (!context || !group) return;
-    
+
     if (selectedUsers.length === 0) {
-      Alert.alert('No users selected', 'Please select at least one user to add.');
+      Alert.alert(
+        'No users selected',
+        'Please select at least one user to add.',
+      );
       return;
     }
 
     const updatedMembers = [...group.members, ...selectedUsers];
-    
+
     try {
-      await context.updateGroup(groupId, { 
+      await context.updateGroup(groupId, {
         members: updatedMembers,
-        totalMembers: group.totalMembers + selectedUsers.length
+        totalMembers: group.totalMembers + selectedUsers.length,
       });
       navigation.goBack();
     } catch (error) {
@@ -79,8 +89,10 @@ const AddMembersScreen = ({ route, navigation }: Props) => {
   const renderSelectedUserPill = (user: User) => (
     <View key={user.id} style={styles.selectedPill}>
       <Image source={{ uri: user.avatar }} style={styles.pillAvatar} />
-      <Text style={styles.pillText} numberOfLines={1}>{user.name.split(' ')[0]}</Text>
-      <TouchableOpacity 
+      <Text style={styles.pillText} numberOfLines={1}>
+        {user.name.split(' ')[0]}
+      </Text>
+      <TouchableOpacity
         style={styles.pillRemoveBtn}
         onPress={() => toggleUserSelection(user)}
       >
@@ -91,9 +103,9 @@ const AddMembersScreen = ({ route, navigation }: Props) => {
 
   const renderUserItem = ({ item }: { item: User }) => {
     const isSelected = selectedUsers.some(u => u.id === item.id);
-    
+
     return (
-      <TouchableOpacity 
+      <TouchableOpacity
         style={[styles.userRow, isSelected && styles.userRowSelected]}
         onPress={() => toggleUserSelection(item)}
         activeOpacity={0.7}
@@ -119,18 +131,26 @@ const AddMembersScreen = ({ route, navigation }: Props) => {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView 
+    <View style={styles.safeArea}>
+      <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         {/* Header with Search */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
             <Icon name="arrow-back" size={24} color="#2d3436" />
           </TouchableOpacity>
           <View style={styles.searchContainer}>
-            <Icon name="search" size={20} color="#636e72" style={styles.searchIcon} />
+            <Icon
+              name="search"
+              size={20}
+              color="#636e72"
+              style={styles.searchIcon}
+            />
             <TextInput
               style={styles.searchInput}
               placeholder="Search friends by name or phone"
@@ -174,22 +194,24 @@ const AddMembersScreen = ({ route, navigation }: Props) => {
         />
 
         <View style={styles.footer}>
-          <TouchableOpacity 
-            style={[styles.addButton, selectedUsers.length === 0 && styles.addButtonDisabled]}
+          <TouchableOpacity
+            style={[
+              styles.addButton,
+              selectedUsers.length === 0 && styles.addButtonDisabled,
+            ]}
             onPress={handleAddMembers}
             disabled={selectedUsers.length === 0}
             activeOpacity={0.8}
           >
             <Text style={styles.addButtonText}>
-              {selectedUsers.length > 0 
+              {selectedUsers.length > 0
                 ? `Add ${selectedUsers.length} Member${selectedUsers.length > 1 ? 's' : ''}`
                 : 'Add Members'}
             </Text>
           </TouchableOpacity>
         </View>
-
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 };
 

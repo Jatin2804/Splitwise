@@ -51,7 +51,7 @@ const AddExpenseScreen = ({ route, navigation }: Props) => {
 
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(
     preselectedGroupId
-      ? appCtx?.getGroupById(preselectedGroupId) ?? null
+      ? (appCtx?.getGroupById(preselectedGroupId) ?? null)
       : null,
   );
   const [showGroupPicker, setShowGroupPicker] = useState(false);
@@ -126,7 +126,7 @@ const AddExpenseScreen = ({ route, navigation }: Props) => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -306,7 +306,7 @@ const AddExpenseScreen = ({ route, navigation }: Props) => {
           animationType="slide"
           presentationStyle="pageSheet"
         >
-          <SafeAreaView style={styles.modalSafe}>
+          <View style={styles.modalSafe}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Select Group</Text>
               <TouchableOpacity onPress={() => setShowGroupPicker(false)}>
@@ -333,10 +333,10 @@ const AddExpenseScreen = ({ route, navigation }: Props) => {
                 </TouchableOpacity>
               )}
             />
-          </SafeAreaView>
+          </View>
         </Modal>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 };
 

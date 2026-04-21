@@ -1,5 +1,12 @@
 import React, { useContext } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AppContext } from '../context/AppContext';
 
@@ -17,7 +24,7 @@ const FriendsScreen = () => {
   const renderItem = ({ item }: { item: any }) => {
     let balanceText = 'Settled up';
     let balanceColor = 'gray';
-    
+
     if (item.moneyOwned > 0) {
       balanceText = `Owes you $${item.moneyOwned.toFixed(2)}`;
       balanceColor = '#5bc5a7';
@@ -31,7 +38,9 @@ const FriendsScreen = () => {
         <Image source={{ uri: item.avatar }} style={styles.avatar} />
         <View style={styles.friendInfo}>
           <Text style={styles.friendName}>{item.name}</Text>
-          <Text style={[styles.friendBalance, { color: balanceColor }]}>{balanceText}</Text>
+          <Text style={[styles.friendBalance, { color: balanceColor }]}>
+            {balanceText}
+          </Text>
         </View>
       </View>
     );
@@ -41,7 +50,7 @@ const FriendsScreen = () => {
     <View style={styles.container}>
       <FlatList
         data={context.users}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
       />
@@ -50,20 +59,20 @@ const FriendsScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' ,marginTop: 30},
+  container: { flex: 1, backgroundColor: '#f5f5f5', marginTop: 30 },
   centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   listContent: { padding: 16 },
-  friendItem: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    backgroundColor: '#fff', 
-    padding: 16, 
+  friendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 16,
     marginBottom: 10,
     borderRadius: 8,
     shadowColor: '#000',
     shadowOpacity: 0.05,
     shadowRadius: 5,
-    elevation: 2
+    elevation: 2,
   },
   avatar: { width: 50, height: 50, borderRadius: 25, marginRight: 15 },
   friendInfo: { flex: 1, justifyContent: 'center' },

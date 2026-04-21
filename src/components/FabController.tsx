@@ -5,11 +5,9 @@ import { useNavigationState } from '@react-navigation/native';
 import { SCREEN_NAMES } from '../navigation';
 
 const FabController = () => {
-
-  const currentTab = useNavigationState((state) => {
+  const currentTab = useNavigationState(state => {
     if (!state) return SCREEN_NAMES.GROUPS;
-    
-   
+
     const currentRoute = state.routes[state.index];
     if (currentRoute.name === SCREEN_NAMES.MAIN_APP) {
       const tabState = currentRoute.state;
@@ -18,7 +16,6 @@ const FabController = () => {
       }
       return SCREEN_NAMES.GROUPS;
     }
-    
 
     return currentRoute.name;
   });
@@ -28,7 +25,7 @@ const FabController = () => {
   if (!showFab) return null;
 
   return (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={styles.fab}
       onPress={() => console.log('Navigate to Add Expense')}
       activeOpacity={0.8}
@@ -42,14 +39,14 @@ const FabController = () => {
 const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
-    bottom: 90, 
+    bottom: 90,
     right: 24,
-    backgroundColor: '#00b578', 
+    backgroundColor: '#00b578',
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 20,
-    borderRadius: 30, 
+    borderRadius: 30,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,

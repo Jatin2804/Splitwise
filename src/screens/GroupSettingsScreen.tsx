@@ -102,7 +102,6 @@ const GroupSettingsScreen = ({ route, navigation }: Props) => {
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-   
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -141,7 +140,6 @@ const GroupSettingsScreen = ({ route, navigation }: Props) => {
             </View>
           </View>
 
-       
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Actions</Text>
 
@@ -192,7 +190,7 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop:20
+    marginTop: 20,
   },
   container: {
     flex: 1,
