@@ -42,7 +42,6 @@ const CATEGORY_COLORS: Record<string, string> = {
   Other: '#00b894',
 };
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
 
 const SettleUpTab = ({
   expenses,
@@ -117,7 +116,7 @@ const SettleUpTab = ({
                     text: 'Delete',
                     style: 'destructive',
                     onPress: () => {
-                      const groupId = exp.id; // we need groupId — passed via closure below
+                      const groupId = exp.id; 
                     },
                   },
                 ])
@@ -201,7 +200,7 @@ const BalancesTab = ({
     );
   }
 
-  // Net balance per member: positive = is owed, negative = owes
+  // Net balance per member if positive = is owed an if negative = owes
   const balances: Record<string, number> = {};
   members.forEach(m => {
     balances[m.id] = 0;
@@ -298,7 +297,6 @@ const TotalsTab = ({
   );
 };
 
-// ─── Main Screen ──────────────────────────────────────────────────────────────
 
 const GroupDetailsScreen = ({ route, navigation }: Props) => {
   const { groupId } = route.params;
@@ -545,7 +543,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
 
-  // header
   headerImage: { width: '100%', height: 240 },
   headerOverlay: {
     flex: 1,
@@ -587,7 +584,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
 
-  // add members
   addMembersWrap: {
     padding: 16,
     backgroundColor: '#fff',
@@ -606,7 +602,6 @@ const styles = StyleSheet.create({
   },
   addMembersText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 
-  // status
   statusCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -768,7 +763,7 @@ const styles = StyleSheet.create({
   },
   fallbackSub: { fontSize: 14, color: '#636e72', textAlign: 'center' },
 
-  // fab
+  
   fab: {
     position: 'absolute',
     bottom: 24,

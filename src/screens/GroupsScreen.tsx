@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   listContent: {
-    padding: 16,
+    padding: 10,
     paddingBottom: 32,
   },
   card: {
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginBottom: 16,
     overflow: 'hidden',
-    height: 100,
+    height: 90,
     borderWidth: 0,
   },
   imageSection: {

@@ -10,6 +10,8 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { UserContext } from '../context/UserContext';
@@ -42,102 +44,130 @@ const EnrollmentScreen = ({ navigation }: any) => {
     }
   };
 
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
+
   return (
-    <KeyboardAvoidingView
-      style={styles.flex}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <ScrollView
-        contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps="handled"
+    <TouchableWithoutFeedback onPress={dismissKeyboard}>
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
       >
-        {/* Logo */}
-        <View style={styles.logoArea}>
-          <View style={styles.logoCircle}>
-            <Icon name="people" size={52} color="#fff" />
-          </View>
-          <Text style={styles.title}>Join Splitwise</Text>
-          <Text style={styles.subtitle}>
-            Create your account to start splitting
-          </Text>
-        </View>
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+        >
+          <View style={styles.container}>
+            {/* Logo */}
+            <View style={styles.logoArea}>
+              <View style={styles.logoCircle}>
+                <Icon name="people" size={52} color="#fff" />
+              </View>
+              <Text style={styles.title}>Join Splitwise</Text>
+              <Text style={styles.subtitle}>
+                Create your account to start splitting
+              </Text>
+            </View>
 
-        {/* Form */}
-        <View style={styles.form}>
-          <View style={styles.field}>
-            <Icon
-              name="person-outline"
-              size={20}
-              color="#636e72"
-              style={styles.fieldIcon}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Full Name"
-              placeholderTextColor="#b2bec3"
-              value={name}
-              onChangeText={setName}
-              autoCapitalize="words"
-            />
-          </View>
+            {/* Form */}
+            <View style={styles.form}>
+              <View style={styles.field}>
+                <Icon
+                  name="person-outline"
+                  size={20}
+                  color="#636e72"
+                  style={styles.fieldIcon}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Full Name"
+                  placeholderTextColor="#b2bec3"
+                  value={name}
+                  onChangeText={setName}
+                  autoCapitalize="words"
+                  returnKeyType="next"
+                  blurOnSubmit={false}
+                />
+              </View>
 
-          <View style={styles.field}>
-            <Icon
-              name="email"
-              size={20}
-              color="#636e72"
-              style={styles.fieldIcon}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Email Address"
-              placeholderTextColor="#b2bec3"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-          </View>
+              <View style={styles.field}>
+                <Icon
+                  name="email"
+                  size={20}
+                  color="#636e72"
+                  style={styles.fieldIcon}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Email Address"
+                  placeholderTextColor="#b2bec3"
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  returnKeyType="next"
+                  blurOnSubmit={false}
+                />
+              </View>
 
-          <View style={styles.field}>
-            <Icon
-              name="phone"
-              size={20}
-              color="#636e72"
-              style={styles.fieldIcon}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Phone Number"
-              placeholderTextColor="#b2bec3"
-              value={phone}
-              onChangeText={setPhone}
-              keyboardType="phone-pad"
-            />
-          </View>
+              <View style={styles.field}>
+                <Icon
+                  name="phone"
+                  size={20}
+                  color="#636e72"
+                  style={styles.fieldIcon}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Phone Number"
+                  placeholderTextColor="#b2bec3"
+                  value={phone}
+                  onChangeText={setPhone}
+                  keyboardType="phone-pad"
+                  returnKeyType="done"
+                />
+              </View>
 
-          <TouchableOpacity
-            style={[styles.btn, loading && styles.btnDisabled]}
-            onPress={handleRegister}
-            disabled={loading}
-            activeOpacity={0.85}
-          >
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.btnText}>Get Started</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+              <TouchableOpacity
+                style={[styles.btn, loading && styles.btnDisabled]}
+                onPress={handleRegister}
+                disabled={loading}
+                activeOpacity={0.85}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.btnText}>Get Started</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: '#fff' },
-  container: { flexGrow: 1, justifyContent: 'center', padding: 28 },
-  logoArea: { alignItems: 'center', marginBottom: 40 },
+  scrollContainer: { 
+    flexGrow: 1,
+  },
+  container: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    paddingHorizontal: 28,
+    paddingVertical: 20,
+  },
+  logoArea: { 
+    alignItems: 'center', 
+    marginBottom: 40,
+    marginTop: Platform.OS === 'ios' ? 0 : 20,
+  },
   logoCircle: {
     width: 96,
     height: 96,
@@ -152,9 +182,22 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 8,
   },
-  title: { fontSize: 28, fontWeight: '800', color: '#1e272e', marginBottom: 8 },
-  subtitle: { fontSize: 15, color: '#636e72' },
-  form: { gap: 16 },
+  title: { 
+    fontSize: 28, 
+    fontWeight: '800', 
+    color: '#1e272e', 
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  subtitle: { 
+    fontSize: 15, 
+    color: '#636e72',
+    textAlign: 'center',
+  },
+  form: { 
+    gap: 16,
+    marginBottom: Platform.OS === 'ios' ? 0 : 20,
+  },
   field: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -166,7 +209,12 @@ const styles = StyleSheet.create({
     height: 54,
   },
   fieldIcon: { marginRight: 12 },
-  input: { flex: 1, fontSize: 16, color: '#2d3436' },
+  input: { 
+    flex: 1, 
+    fontSize: 16, 
+    color: '#2d3436',
+    paddingVertical: Platform.OS === 'ios' ? 12 : 8,
+  },
   btn: {
     backgroundColor: '#00b894',
     height: 54,
