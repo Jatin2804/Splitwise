@@ -46,6 +46,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     await AsyncStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
   };
 
+
   const logout = async () => {
     setCurrentUser(null);
     await AsyncStorage.removeItem(USER_STORAGE_KEY);

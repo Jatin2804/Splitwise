@@ -52,8 +52,8 @@ const EnrollmentScreen = ({ navigation }: any) => {
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <KeyboardAvoidingView
         style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        behavior={'height'}
+        keyboardVerticalOffset={20}
       >
         <ScrollView
           contentContainerStyle={styles.scrollContainer}
@@ -90,7 +90,6 @@ const EnrollmentScreen = ({ navigation }: any) => {
                   onChangeText={setName}
                   autoCapitalize="words"
                   returnKeyType="next"
-                  blurOnSubmit={false}
                 />
               </View>
 
@@ -172,11 +171,11 @@ const styles = StyleSheet.create({
     width: 96,
     height: 96,
     borderRadius: 48,
-    backgroundColor: '#00b894',
+    backgroundColor: '#006cd1ff',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
-    shadowColor: '#00b894',
+    shadowColor: '#006cd1ff',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
@@ -191,7 +190,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 15,
-    color: '#636e72',
+    color: '#006cd1ff',
     textAlign: 'center',
   },
   form: {
@@ -216,13 +215,13 @@ const styles = StyleSheet.create({
     paddingVertical: Platform.OS === 'ios' ? 12 : 8,
   },
   btn: {
-    backgroundColor: '#00b894',
+    backgroundColor: '#006cd1ff',
     height: 54,
     borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 8,
-    shadowColor: '#00b894',
+    shadowColor: '#0586ffff',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.35,
     shadowRadius: 10,

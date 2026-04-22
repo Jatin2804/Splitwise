@@ -7,7 +7,6 @@ import ActivityScreen from '../screens/ActivityScreen';
 import AccountScreen from '../screens/AccountScreen';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { SCREEN_NAMES } from '../navigation';
-import FabController from '../components/FabController';
 
 const Tab = createBottomTabNavigator();
 
@@ -47,7 +46,6 @@ const TabNavigator = () => {
           options={{ title: 'Account' }}
         />
       </Tab.Navigator>
-      {/* <FabController /> */}
     </View>
   );
 };

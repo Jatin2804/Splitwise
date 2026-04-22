@@ -7,7 +7,6 @@ const WelcomeScreen = ({ navigation }: any) => {
   const userCtx = useContext(UserContext);
 
   useEffect(() => {
-    // Wait until UserContext is done loading from AsyncStorage
     if (userCtx?.isLoading) return;
 
     const timer = setTimeout(() => {

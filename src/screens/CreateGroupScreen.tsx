@@ -138,7 +138,7 @@ const CreateGroupScreen = ({ navigation }: Props) => {
               </Text>
             </TouchableOpacity>
           ))}
-        </View>
+        </View>What is App Lifecycle in React Native?
       </View>
     </KeyboardAvoidingView>
   );
